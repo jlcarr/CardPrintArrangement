@@ -1,0 +1,9 @@
+.DS_Store
+
+#Images
+*.png
+*.jpg
+*.jpeg
+
+#Python
+*.pyc
