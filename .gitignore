@@ -4,6 +4,7 @@
 *.png
 *.jpg
 *.jpeg
+*.pdf
 
 #Python
 *.pyc
