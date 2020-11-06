@@ -19,3 +19,23 @@ A Python script to aid in arranging playing cards for printing.
 - 1_firstcard[back].png
 - 2_secondcard.png
 - 2_secondcard[back].png
+
+### Configuration
+The config.json file should be edited to reflect the print job desired. In particular the following fields are needed.
+- **printsheet-height-inches**: The height (vertical direction) of the sheets upon which the cards with be printed in inches.
+- **printsheet-width-inches**: The width (horizontal direction) of the sheets upon which the cards with be printed in inches.
+- **printsheet-ppi**: The pixels per inch (ppi) of the images generated for printing.
+- **card-height-inches**: The heigth (vertical direction) of the cards to be printed and cut out.
+- **card-width-inches**: The width (horizontal direction) of the cards to be printed and cut out.
+- **card-bleed-inches**: The vertical and horizontal bleed (additional image margin added to account for cutting error tolerances) for the card images in inches.
+#### Example
+```json
+{
+	"printsheet-height-inches": 11, 
+	"printsheet-width-inches": 8.5,
+	"printsheet-ppi": 300,
+	"card-height-inches": 3.5,
+	"card-width-inches": 2.25,
+	"card-bleed-inches": 0.125
+}
+```
