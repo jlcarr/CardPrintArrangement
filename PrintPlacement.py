@@ -23,61 +23,66 @@ def load_files(input_dir):
 def create_layouts(im_list, config):
 	layout_list = []
 
-	printsheet_height_inches = config["printsheet-height-inches"]
-	printsheet_width_inches = config["printsheet-width-inches"]
-	printsheet_ppi = config["printsheet-ppi"]
-	printsheet_height_px = int(printsheet_height_inches * printsheet_ppi)
-	printsheet_width_px = int(printsheet_width_inches * printsheet_ppi)
+	sheet_height_inches = config["printsheet-height-inches"]
+	sheet_width_inches = config["printsheet-width-inches"]
+	sheet_margin_inches = config["printsheet-margin-inches"]
+	print_ppi = config["printsheet-ppi"]
+	sheet_height_px = int(sheet_height_inches * print_ppi)
+	sheet_width_px = int(sheet_width_inches * print_ppi)
+	sheet_margin_px = int(sheet_margin_inches * print_ppi)
+	print_height_px = sheet_height_px - 2*sheet_margin_px
+	print_width_px = sheet_width_px - 2*sheet_margin_px
 
 	card_height_inches = config["card-height-inches"]
 	card_width_inches = config["card-width-inches"]
 	card_bleed_inches = config["card-bleed-inches"]
-	card_height_px = card_height_inches * printsheet_ppi
-	card_width_px = card_width_inches * printsheet_ppi
-	total_card_height_px = (card_height_inches + 2*card_bleed_inches) * printsheet_ppi
-	total_card_width_px = (card_width_inches + 2*card_bleed_inches) * printsheet_ppi
+	card_height_px = card_height_inches * print_ppi
+	card_width_px = card_width_inches * print_ppi
+	total_card_height_px = (card_height_inches + 2*card_bleed_inches) * print_ppi
+	total_card_width_px = (card_width_inches + 2*card_bleed_inches) * print_ppi
 
-	n_vertical = int(printsheet_height_px / total_card_height_px)
-	n_horizontal = int(printsheet_width_px / total_card_width_px)
+	n_vertical = int(print_height_px / total_card_height_px)
+	n_horizontal = int(print_width_px / total_card_width_px)
 	n_sheets = math.ceil(len(im_list) / 2 / n_vertical / n_horizontal)
 	print(f"{n_sheets} sheets (front and back) of {n_vertical}x{n_horizontal} cards")
 	
-	line_width = int(printsheet_ppi/16)
+	line_width = 5 # int(print_ppi/16)
 
 	for i_sheet in range(n_sheets):
 		# Prepare the front
-		front = Image.new('RGB', (printsheet_width_px, printsheet_height_px), (255,255,255))
+		front = Image.new('RGB', (sheet_width_px, sheet_height_px), (255,255,255))
 		front_draw = ImageDraw.Draw(front)
-		back = Image.new('RGB', (printsheet_width_px, printsheet_height_px), (255,255,255))
+		back = Image.new('RGB', (sheet_width_px, sheet_height_px), (255,255,255))
 		back_draw = ImageDraw.Draw(back)
 		# draw the cutting guides
 		for i_guide in range(n_vertical):
-			y_pos = (1/2+i_guide) * printsheet_height_px / n_vertical - card_height_px /2
-			front_draw.line([(0,y_pos), (printsheet_width_px, y_pos)], fill=(255,0,0), width=line_width)
-			back_draw.line([(0,y_pos), (printsheet_width_px, y_pos)], fill=(255,0,0), width=line_width)
-			y_pos = (1/2+i_guide) * printsheet_height_px / n_vertical + card_height_px /2
-			front_draw.line([(0,y_pos), (printsheet_width_px, y_pos)], fill=(255,0,0), width=line_width)
-			back_draw.line([(0,y_pos), (printsheet_width_px, y_pos)], fill=(255,0,0), width=line_width)
+			y_pos = (1/2+i_guide) * print_height_px / n_vertical - card_height_px /2 + sheet_margin_px
+			front_draw.line([(0,y_pos), (sheet_width_px, y_pos)], fill=(255,0,0), width=line_width)
+			back_draw.line([(0,y_pos), (sheet_width_px, y_pos)], fill=(255,0,0), width=line_width)
+			y_pos = (1/2+i_guide) * print_height_px / n_vertical + card_height_px /2 + sheet_margin_px
+			front_draw.line([(0,y_pos), (sheet_width_px, y_pos)], fill=(255,0,0), width=line_width)
+			back_draw.line([(0,y_pos), (sheet_width_px, y_pos)], fill=(255,0,0), width=line_width)
 		for i_guide in range(n_horizontal):
-			x_pos = (1/2+i_guide) * printsheet_width_px / n_horizontal - card_width_px /2
-			front_draw.line([(x_pos,0), (x_pos, printsheet_height_px)], fill=(255,0,0), width=line_width)
-			back_draw.line([(x_pos,0), (x_pos, printsheet_height_px)], fill=(255,0,0), width=line_width)
-			x_pos = (1/2+i_guide) * printsheet_width_px / n_horizontal + card_width_px /2
-			front_draw.line([(x_pos,0), (x_pos, printsheet_height_px)], fill=(255,0,0), width=line_width)
-			back_draw.line([(x_pos,0), (x_pos, printsheet_height_px)], fill=(255,0,0), width=line_width)
+			x_pos = (1/2+i_guide) * print_width_px / n_horizontal - card_width_px /2 + sheet_margin_px
+			front_draw.line([(x_pos,0), (x_pos, sheet_height_px)], fill=(255,0,0), width=line_width)
+			back_draw.line([(x_pos,0), (x_pos, sheet_height_px)], fill=(255,0,0), width=line_width)
+			x_pos = (1/2+i_guide) * print_width_px / n_horizontal + card_width_px /2 + sheet_margin_px
+			front_draw.line([(x_pos,0), (x_pos, sheet_height_px)], fill=(255,0,0), width=line_width)
+			back_draw.line([(x_pos,0), (x_pos, sheet_height_px)], fill=(255,0,0), width=line_width)
 
 		for i_horizontal in range(n_horizontal):
 			for i_vertical in range(n_vertical):
 				if(not im_list):
 					break
-				x_pos = int((1/2+i_horizontal) * printsheet_width_px / n_horizontal - total_card_width_px /2)
-				y_pos = int((1/2+i_vertical) * printsheet_height_px / n_vertical - total_card_height_px /2)
+				x_pos = int((1/2+i_horizontal) * print_width_px / n_horizontal - total_card_width_px /2 + sheet_margin_px)
+				y_pos = int((1/2+i_vertical) * print_height_px / n_vertical - total_card_height_px /2 + sheet_margin_px)
 				front.paste(im_list.pop(), (x_pos,y_pos))
-				x_pos = int((n_horizontal - 1/2 - i_horizontal) * printsheet_width_px / n_horizontal - total_card_width_px /2)
+				x_pos = int((n_horizontal - 1/2 - i_horizontal) * print_width_px / n_horizontal - total_card_width_px /2 + sheet_margin_px)
 				back.paste(im_list.pop(), (x_pos,y_pos))
 		layout_list.append(front.convert('RGB'))
 		layout_list.append(back.convert('RGB'))
 	return layout_list
+
 
 
 

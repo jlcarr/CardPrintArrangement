@@ -1,8 +1,9 @@
 {
 	"printsheet-height-inches": 11, 
 	"printsheet-width-inches": 8.5,
+	"printsheet-margin-inches": 0.25,
 	"printsheet-ppi": 300,
-	"card-height-inches": 3.5,
-	"card-width-inches": 2.25,
+	"card-height-inches": 2.5,
+	"card-width-inches": 2.5,
 	"card-bleed-inches": 0.125
 }
